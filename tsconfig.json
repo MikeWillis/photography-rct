@@ -1,0 +1,25 @@
+{
+	"notes": [
+		{
+			"whyTheHellIsThisHere?": "Because if you remove it (and the corresponding file.ts) vs code will start complaining about all sorts of shit, such as 'React refers to a UMD global, but the current file is a module. Consider adding an import instead.'",
+			"butWeAreNotEvenUsingTypeScript": "I know, it's stupid. See https://stackoverflow.com/a/45790421/1042398"
+		}
+	],
+
+
+
+	"compilerOptions": {
+		"allowJs": false,
+		"jsx": "preserve",
+		"noEmit": true // Do not compile the JS (or TS) files in this project on build
+	},
+	"compileOnSave": false,
+	"exclude": [
+		"./src",
+		"./htdocs",
+		"./src_default"
+	],
+	"include": [
+		"./file.ts"
+	]
+}

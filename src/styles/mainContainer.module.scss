@@ -1,0 +1,12 @@
+.mainContainer {
+	max-width: 100%;
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+
+	// background-image: url("https://data.mikewillisphotography.com/api/get/homeBanner.php");
+	background-image: url("https://data.mikewillisphotography.com/api/get/homeBanner.php?getImage");
+	background-attachment: fixed;
+	background-size: cover;
+	background-position: center;
+}

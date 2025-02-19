@@ -1,0 +1,13 @@
+.content {
+	background-color: #fff;
+}
+.contentTransparent {
+	background-color: rgba(255, 255, 255, 0.85); 
+}
+.content100vw {
+	/*
+	* eliminates width of scrollbar from calculation
+	* see https://stackoverflow.com/a/34884924/1042398
+	*/
+	width: calc(100vw - (100vw - 100%)); 
+}

@@ -1,0 +1,215 @@
+.galleryContainer {
+	padding-top: 20px;
+	min-height: 60vh;
+}
+
+.thumbContainer {
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.thumbDetails {
+	position: absolute;
+	bottom: 0px;
+	padding: 0px 2px 1px 2px;
+	width: 100%;
+	background-color: rgba(255, 255, 255, 0.6);
+	line-height: 1.2rem;
+	font-weight: bold;
+	// will-change: transform;
+}
+
+
+// .dialogBody {
+// 	height: 100%;
+// 	width: 100%;
+// 	position: relative;
+
+// 	.imageContainer {
+// 		position: absolute;
+// 		top: 0px;
+// 		left: 0px;
+// 		height: 100%;
+// 		width: 100%;
+// 		overflow: scroll;
+
+// 		img {
+// 			margin-left: auto;
+// 			margin-right: auto;
+// 		}
+// 	}
+
+// 	.imageNavContainer {
+// 		position: absolute;
+// 		top: 0;
+// 		height: 100%;
+// 		width: 100%;
+// 		pointer-events: none;
+
+// 		.galleryNavigate {
+// 			position: absolute;
+// 			height: 80vh;
+// 			width: 3vw;
+// 			background: linear-gradient(90deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.5) 35%, rgba(255,255,255,0.5) 100%);
+		
+// 			&.backward {
+// 				cursor: pointer;
+// 			}
+// 			&.forward {
+// 				right: 0;
+// 				cursor: pointer;
+// 			}
+// 		}
+// 	}
+
+	
+// }
+
+.dialogHeader {
+	height: 30px;
+	padding: 3px;
+	margin: 0;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+.dialogFooter {
+	height: 30px;
+	padding: 3px;
+	margin: 0;
+	border-top-width: 1px;
+	border-top-style: solid;
+}
+
+.photoData {
+	font-style: italic;
+}
+
+.dialogBody {
+	padding: 3px;
+}
+.galleryNavigate {
+	padding: 0px 3px;
+}
+
+
+
+
+
+
+
+.imageList {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+
+	/* if you change this you must also change the components that use this stylesheet
+	* currently that's TripGallery and AnimalGallery
+	* look for the line like: let RowSpan = Math.ceil(Image.ThumbHeight / 20) + 5;
+	*/
+	grid-gap: 0px 20px;
+	grid-auto-rows: 20px;
+
+	margin-left: 30px;
+	margin-right: 30px;
+	margin-top: 50px;
+}
+
+.imageList img {
+	width: 300px;
+	grid-row-end: span 2;
+}
+
+.titleIcons {
+	margin: 0px 10px;
+	display: inline-block;
+}
+
+.PhotoDetails {
+	position: relative;
+	display: inline-block;
+	font-weight: normal;
+}
+.PhotoDetails i {
+	font-size: 1em;
+	cursor: pointer;
+}
+.PhotoDetails div {
+	position: absolute;
+	top: 40px;
+	left: 0px;
+	border: 1px solid #000;
+	background-color: rgba(255, 255, 255, .8);
+	color: #000;
+	width: 600px;
+	padding: 3px;
+}
+.PhotoDetails div ul {
+	margin-left: 20px;
+}
+
+.adminTools {
+	position: absolute;
+	width: 500px;
+	height: 400px;
+	top: 20px;
+	left: 20px;
+	background-color: rgba(255, 255, 255, .8);
+	border: 1px solid #ccc;
+	display: hidden;
+	padding: 3px;
+	z-index: 1;
+}
+
+.GalleryThumb:hover .adminTools {
+	display: block;
+}
+
+.adminTools form label {
+	display: inline-block;
+	padding: 2px;
+	margin: 2px;
+	width: 25%;
+}
+
+.adminTools form input, .adminTools form select {
+	width: 40% !important;
+	display: inline-block !important;
+}
+
+.adminTools .icon {
+	font-size: 1.5em;
+}
+
+.galleryBanner {
+	background-image: url("https://images.mikewillisphotography.com/banners/r.php");
+	min-height: 130px;
+	background-size: cover;
+	padding: 4em 0 0;
+
+	h2 {
+		text-align: center;
+		text-transform: capitalize;
+		filter: drop-shadow(0px 0px 5px #fff);
+		// this would be nice but we need to use the drop shadow to create contrast, not for highlighting..
+		// filter: drop-shadow(5px 5px 5px var(--chakra-colors-color-palette-fg));
+	}
+}
+
+.IUCNCategoryCR, .IUCNCategoryEN, .IUCNCategoryVU {
+	color: #f00;
+	font-weight: bold;
+}
+
+.IUCNCategoryNT {
+	color: #ff0;
+	color: #FFFF6C;
+	font-weight: bold;
+}
+
+.animalCommon {
+	text-transform: capitalize;
+}
+
+.GalleryThumb a.notVisible {
+	background-color: #fca99a;
+	display: inline-block;
+}
