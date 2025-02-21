@@ -13,7 +13,8 @@ const fixLinkTo = to => {
 	if ( to ) {
 		let removals = [
 			"https://",
-			"www.mikewillisphotography.com"
+			"www.mikewillisphotography.com",
+			"data.mikewillisphotography.com",
 		];
 		let replacements = [
 			{

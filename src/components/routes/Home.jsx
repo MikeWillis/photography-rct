@@ -25,17 +25,17 @@ import { default as generalStyles } from "../../styles/general.module.scss";
 let galleryLinks = [
 	{
 		text: "My Favorites",
-		to: "/animals/favorites",
+		to: "/galleries/favorites",
 		blurb: `This is a "smaller" gallery of my personal favorites. These are usually images that capture a unique moment, or do a great job of highlighting an animal's beauty.`,
 	},
 	{
 		text: "Alphabetized",
-		to: "/animals/",
+		to: "/galleries/",
 		blurb: `Alphabetized list of all animals (and nature photos). Click an animal to see all the pictures I've taken of it.`,
 	},
 	{
 		text: "Newest",
-		to: "/animals/newest",
+		to: "/galleries/newest",
 		blurb: `Newest photos, usually from my most recent travels.`,
 	},
 ]; // galleryLinks
