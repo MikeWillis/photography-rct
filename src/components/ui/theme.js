@@ -6,6 +6,9 @@ const config = defineConfig({
 		"html, body": {
 			height: "100%",
 		},
+		".grecaptcha-badge": {
+			visibility: "hidden",
+		},
 		html: {
 			colorPalette: siteConfig.colorPalette,
 		},
