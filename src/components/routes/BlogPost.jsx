@@ -1,14 +1,16 @@
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import he from "he";
 import { Interweave } from 'interweave';
+import { FaRegPlusSquare, FaBars } from "react-icons/fa";
 import {
 	Box,
 	Flex,
 	Skeleton,
 	Link as ChakraLink,
 	Text,
+	Button,
 } from "@chakra-ui/react";
 import {
 	DialogBody,
@@ -20,6 +22,13 @@ import {
 	DialogTrigger,
 	DialogFooter,
 } from "../ui/dialog";
+import {
+	MenuContent,
+	MenuItem,
+	MenuRoot,
+	MenuTrigger,
+	MenuTriggerItem,
+} from "../ui/menu";
 
 import AnimatedHeading from "../myUI/AnimatedHeading";
 import Link from "../general/Link";
@@ -39,18 +48,18 @@ import "../../styles/blogPost.css";
 import styles from "../../styles/blogPost.module.scss";
 import { default as generalStyles } from "../../styles/general.module.scss";
 
-let fixImagePaths = post=>{
-	post.content.rendered = post.content.rendered.replaceAll( `src="/images/`, `src="https://${config.imagesDomain}/` );
-	post.content.rendered = post.content.rendered.replaceAll( `src='/images/`, `src='https://${config.imagesDomain}/` );
+let fixImagePaths = post => {
+	post.content.rendered = post.content.rendered.replaceAll(`src="/images/`, `src="https://${config.imagesDomain}/`);
+	post.content.rendered = post.content.rendered.replaceAll(`src='/images/`, `src='https://${config.imagesDomain}/`);
 	return post;
 }; // fixImagePaths
 
-let formatPostDate = date=>{
-	console.log("date",date);
-	date = new Date( date );
-	console.log("date",date);
+let formatPostDate = date => {
+	console.log("date", date);
+	date = new Date(date);
+	console.log("date", date);
 	let month = date.getMonth();
-	month = getFullMonth( month );
+	month = getFullMonth(month);
 	return `${month} ${date.getDate()}, ${date.getFullYear()}`;
 }; // formatPostDate
 
@@ -61,22 +70,22 @@ const BlogPost = props => {
 	let categories = useSelector(state => state.categories);
 
 	const [st_post, sst_post] = useState(null);
-	const [st_postDate,sst_postDate] = useState(null);
+	const [st_postDate, sst_postDate] = useState(null);
 	const [st_author, sst_author] = useState(null);
 	const [st_dialogOpen, sst_dialogOpen] = useState(false);
 	const [st_focusedImage, sst_focusedImage] = useState(null);
 
-	useEffect(()=>{
+	useEffect(() => {
 		// console.log("categories useEffect running:", categories);
-		if ( !categories.categories.length && !categories.loaded && !categories.loading ) {
+		if (!categories.categories.length && !categories.loaded && !categories.loading) {
 			console.log("BlogPost dispatching fetchCategories");
-			dispatch( fetchCategories() );
-		} else if ( !categories.categories.length && categories.loaded ) {
+			dispatch(fetchCategories());
+		} else if (!categories.categories.length && categories.loaded) {
 			// hmph, the load must have failed :(
-		} else if ( categories.categories.length ) {
+		} else if (categories.categories.length) {
 			// yay
 		}
-	},[
+	}, [
 		dispatch,
 		categories,
 	]);
@@ -97,24 +106,24 @@ const BlogPost = props => {
 		id,
 	]);
 
-	let setFocusedImage = event => {
+	let setFocusedImage = useCallback(event => {
 		event.preventDefault();
-		console.log("event.currentTarget",event.currentTarget);
-		console.log("event.currentTarget.href",event.currentTarget.href);
+		// console.log("event.currentTarget",event.currentTarget);
+		// console.log("event.currentTarget.href",event.currentTarget.href);
 
 		let imagePath = event.currentTarget.getAttribute("href");
 		imagePath = imagePath.replace("/images/", "/");
 		imagePath = imagePath.replace("https://www.mikewillisphotography.com/", "/");
-		console.log("imagePath",imagePath);
+		// console.log("imagePath",imagePath);
 		let fullURL;
-		if ( imagePath.indexOf( "/blog/wp-content/uploads/" ) !== -1 ) {
+		if (imagePath.indexOf("/blog/wp-content/uploads/") !== -1) {
 			fullURL = `https://${config.apiDomain}${imagePath}`;
 		} else {
 			fullURL = `https://${config.imagesDomain}${imagePath}`;
 		}
 		sst_focusedImage(fullURL);
 		sst_dialogOpen(true);
-	}; // setFocusedImage
+	}, []); // setFocusedImage
 
 	useEffect(() => {
 		document.querySelectorAll(".blogPost a.gallery").forEach(el => {
@@ -127,54 +136,54 @@ const BlogPost = props => {
 
 	let renderPostedIn = () => {
 		//console.log("length:",this.state.post.categories.length);
-		return st_post.categories.map( (category,index)=>{
-				//console.log("index",index);
-				// There can be only one.
-				let matchCategory = categories.categories.filter( entry=>{
-					return entry.id === category;
-				})[0];
-				
-				if ( !matchCategory ) {
-					return "";
-				} else {
-					let href = `/categories/${matchCategory.id}/${matchCategory.name}`;
-					//console.log("href",href);
-					let commaSpaceAfter = (index + 1 < st_post.categories.length) ? "," : "";
-					return (
-						<Fragment key={matchCategory.id}>
-							<Link
-								variant="underline"
-								to={href}
-								text={`${matchCategory.name}${commaSpaceAfter}`}
-								spaceAfter={commaSpaceAfter}
-							/>
-							{
-								commaSpaceAfter ? (
-									<Fragment>&nbsp;&nbsp;</Fragment>
-								) : ""
-							}
-						</Fragment>
-					);
-				}
+		return st_post.categories.map((category, index) => {
+			//console.log("index",index);
+			// There can be only one.
+			let matchCategory = categories.categories.filter(entry => {
+				return entry.id === category;
+			})[0];
+
+			if (!matchCategory) {
+				return "";
+			} else {
+				let href = `/categories/${matchCategory.id}/${matchCategory.name}`;
+				//console.log("href",href);
+				let commaSpaceAfter = (index + 1 < st_post.categories.length) ? "," : "";
+				return (
+					<Fragment key={matchCategory.id}>
+						<Link
+							variant="underline"
+							to={href}
+							text={`${matchCategory.name}${commaSpaceAfter}`}
+							spaceAfter={commaSpaceAfter}
+						/>
+						{
+							commaSpaceAfter ? (
+								<Fragment>&nbsp;&nbsp;</Fragment>
+							) : ""
+						}
+					</Fragment>
+				);
+			}
 		});
 	}; // renderPostedIn
 
-	let renderAuthor = ()=>{
+	let renderAuthor = () => {
 		return (
-				<Fragment>
-					Posted in: {renderPostedIn()}
-					&nbsp;by {
-						st_post.author === 1 ? (
-							<Link
-								variant="underline"
-								to="/posts/5/about-me/"
-								text={st_author.name}
-							/>
-						) : (
-							st_author.name
-						)
-					}
-				</Fragment>
+			<Fragment>
+				Posted in: {renderPostedIn()}
+				&nbsp;by {
+					st_post.author === 1 ? (
+						<Link
+							variant="underline"
+							to="/posts/5/about-me/"
+							text={st_author.name}
+						/>
+					) : (
+						st_author.name
+					)
+				}
+			</Fragment>
 		);
 	}; // renderAuthor
 
@@ -186,6 +195,7 @@ const BlogPost = props => {
 			marginTop="30px"
 			paddingTop="5px"
 			paddingBottom="5px"
+			position="relative"
 		>
 			<Flex
 				gap="3"
@@ -200,13 +210,13 @@ const BlogPost = props => {
 						) : (
 							<Fragment>
 								<AnimatedHeading
-									heading={`${he.decode( st_post.title.rendered )}`}
+									heading={`${he.decode(st_post.title.rendered)}`}
 									marginLeft="0px"
 									marginRight="0px"
 								/>
 								<Box>
 									<Text fontStyle="italic" paddingLeft="3vw">
-										{ st_author ? renderAuthor() : "" }
+										{st_author ? renderAuthor() : ""}
 										{" "} on {st_postDate}
 									</Text>
 									<Interweave
@@ -219,8 +229,42 @@ const BlogPost = props => {
 					}
 				</Box>
 
-				<BlogSidebar />
+				<Box hideBelow="md">
+					<BlogSidebar />
+				</Box>
 			</Flex>
+
+			<Box
+				position="fixed"
+				top="30vh"
+				right="0px"
+				hideFrom="md"
+			>
+				<MenuRoot
+					positioning={{ placement: "bottom-end" }}
+				>
+					<MenuTrigger
+						asChild
+					>
+						<Button
+							variant="subtle"
+							size="sm"
+							rounded="full"
+						>
+							<FaRegPlusSquare />
+						</Button>
+					</MenuTrigger>
+					<MenuContent
+						borderStyle="solid"
+						borderWidth="1px"
+						borderColor={"{colors.teal.solid}"}
+						borderRadius={"{radii.lg}"}
+						width="80vw"
+					>
+						<BlogSidebar />
+					</MenuContent>
+				</MenuRoot>
+			</Box>
 
 			<DialogRoot
 				lazyMount
@@ -237,7 +281,7 @@ const BlogPost = props => {
 						<img
 							src={st_focusedImage}
 							alt={`blog post image`}
-							style={{marginLeft: "auto", marginRight:"auto"}}
+							style={{ marginLeft: "auto", marginRight: "auto" }}
 						/>
 					</DialogBody>
 					<DialogCloseTrigger backgroundColor="#fff" />

@@ -31,7 +31,7 @@ import styles from "../../styles/blogGeneral.module.scss";
 import { getFullMonth } from "../../util";
 
 const BlogSidebar_LinkList = props => {
-	console.log("sidebar props:", props);
+	// console.log("sidebar props:", props);
 	return (
 		<Box>
 			<AnimatedHeading
@@ -78,6 +78,10 @@ const BlogSidebar_LinkList = props => {
 }; // BlogSidebar_LinkList
 
 const BlogSidebar = props => {
+	let {
+		isMobile,
+	} = props;
+
 	const dispatch = useDispatch();
 
 	let categories = useSelector(state => state.categories);
@@ -131,7 +135,7 @@ const BlogSidebar = props => {
 
 	return (
 		<Box
-			className={styles.sidebarContainer}
+			className={isMobile ? styles.sidebarContainer : styles.mobileSidebarContainer}
 			borderLeftColor={"{colors.teal.solid}"}
 		>
 			{
