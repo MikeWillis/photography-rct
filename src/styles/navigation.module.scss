@@ -14,7 +14,31 @@
 				width: 100%;
 				padding: 5px 10px;
 				outline: none;
+				white-space: nowrap;
 			}
 		}
+	}
+}
+
+.navLink {
+	width: 100%;
+	padding: 5px 10px;
+	outline: none;
+	white-space: nowrap;
+}
+
+.mobileNav {
+	width: 80vw;
+	border-width: 1px;
+	border-style: solid;
+
+	div[data-scope='menu'] {
+		margin: 0px;
+		padding: 0px;
+	}
+	a {
+		width: 100%;
+		padding: 10px 15px;
+		outline: none;
 	}
 }

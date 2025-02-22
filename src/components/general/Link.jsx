@@ -11,7 +11,7 @@ import { config } from "../../config";
 
 const Link = props=>{
 	return (
-		<ChakraLink variant={props.variant} asChild>
+		<ChakraLink variant={props.variant} asChild className={props.className || null}>
 			<NavLink to={props.to} end>
 				{
 					props.image ? (

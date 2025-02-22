@@ -37,12 +37,14 @@ export const initialState = {
 		{
 			key: "contact",
 			title: "Contact",
-			link: "/contact/"
+			link: "/contact/",
+			hideBelow: "md",
 		},
 		{
 			key: "aboutMe",
 			title: "About Me",
-			link: "/posts/5/about-me/"
+			link: "/posts/5/about-me/",
+			hideBelow: "md",
 		},
 	],
 };

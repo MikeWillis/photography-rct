@@ -13,6 +13,7 @@ import styles from "../../styles/header.module.scss";
 
 const Header = props => {
 	const [st_scrolled, sst_scrolled] = useState(false);
+	const [st_hideLogo, sst_hideLogo] = useState(false); // if mobile nav is open, we hide the logo
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -36,16 +37,20 @@ const Header = props => {
 				height="100%"
 			>
 				<Box width="225px">
-					<NavLink to="/" end>
-						<img
-							className={styles.logo}
-							src="https://images.mikewillisphotography.com/logos/MikeLogo_Transparent_Cropped.100.png"
-							alt="Mike Willis Photography"
-						/>
-					</NavLink>
+					{
+						!st_hideLogo ? (
+							<NavLink to="/" end>
+								<img
+									className={styles.logo}
+									src="https://images.mikewillisphotography.com/logos/MikeLogo_Transparent_Cropped.100.png"
+									alt="Mike Willis Photography"
+								/>
+							</NavLink>
+						) : ""
+					}
 				</Box>
 				<Box flex="1">
-					<Navigation />
+					<Navigation hideLogo={sst_hideLogo} />
 				</Box>
 			</Flex>
 
