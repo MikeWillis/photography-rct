@@ -117,7 +117,7 @@ const BlogPost = props => {
 		// console.log("imagePath",imagePath);
 		let fullURL;
 		if (imagePath.indexOf("/blog/wp-content/uploads/") !== -1) {
-			fullURL = `https://${config.apiDomain}${imagePath}`;
+			fullURL = imagePath;
 		} else {
 			fullURL = `https://${config.imagesDomain}${imagePath}`;
 		}

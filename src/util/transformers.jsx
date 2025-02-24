@@ -10,6 +10,7 @@ import Link from "../components/general/Link";
 import { config } from "../config";
 
 const fixLinkTo = to => {
+	console.log("fixLinkTo called for:", to);
 	if ( to ) {
 		let removals = [
 			"https://",
@@ -20,7 +21,11 @@ const fixLinkTo = to => {
 			{
 				find: "/galleryByTrip.php?trip=",
 				replace: "/trips/"
-			}
+			},
+			{
+				find: "/blog/wp-content/uploads",
+				replace: "data.mikewillisphotography.com/blog/wp-content/uploads"
+			},
 		];
 		removals.forEach(remove=>{
 			to = to.replace( remove, "" );
@@ -34,10 +39,18 @@ const fixLinkTo = to => {
 }; // fixLinkTo
 
 const transformA = (node, children) => {
+	console.log("transformA called for node href:", node.getAttribute("href"));
+	console.log("transformA !node.getAttribute(class)",!node.getAttribute("class"));
+	console.log("transformA test 2:",node.getAttribute("class")?.indexOf("gallery") === -1);
 	if (
 		// node.getAttribute("href")?.indexOf("mikewillisphotography") !== -1 &&
-		(!node.getAttribute("class") || node.getAttribute("class")?.indexOf("gallery") === -1)
+		(
+			!node.getAttribute("class") ||
+			node.getAttribute("class")?.indexOf("gallery") === -1 ||
+			node.getAttribute("href")?.indexOf("/blog/wp-content/uploads") !== -1
+		)
 	) {
+
 		if ( node.innerText === "Continue Reading" ) {
 			// just get rid of these
 			return <Fragment></Fragment>;
@@ -72,8 +85,9 @@ const transformA = (node, children) => {
 					{children[0]}
 				</ChakraLink>
 			);
-		} else {
+		} else if ( node.getAttribute("href")?.indexOf("/blog/wp-content/uploads") === -1 ) {
 			// internal link, use router
+			console.log("transformA internal link??");
 			return (
 				<Link
 					variant="underline"
@@ -81,13 +95,27 @@ const transformA = (node, children) => {
 					text={children[0]}
 				/>
 			);
+		} else {
+			let oldRef = node.getAttribute('href');
+			let newRef = oldRef.replace("www.mikewillisphotography.com/blog/wp-content/uploads", "data.mikewillisphotography.com/blog/wp-content/uploads");
+			console.log("oldRef",oldRef);
+			console.log("newRef",newRef);
+			node.setAttribute("href", newRef );
 		}
 	}
 }; // transformA
 
+const transformIMG = (node, children) => {
+	let src = node.getAttribute("src");
+	if ( src.indexOf("www.mikewillisphotography.com/blog/wp-content/uploads") ) {
+		node.setAttribute("src", src.replace("www.mikewillisphotography.com/blog/wp-content/uploads", "data.mikewillisphotography.com/blog/wp-content/uploads"))
+	}
+}; // transformIMG
+
 const transform = (node, children) => {
 	switch (node.tagName) {
 	case "A": return transformA(node,children); break;
+	case "IMG": return transformIMG(node,children); break;
 	case "DIV": return <Box>{...children}</Box>; break;
 	case "LI": return <List.Item>{...children}</List.Item>; break;
 	case "OL": return <List.Root listStyleType="number">{...children}</List.Root>; break;
