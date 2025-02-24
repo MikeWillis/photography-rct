@@ -28,10 +28,11 @@ const BlogPostList = props => {
 		<Box marginTop="20px">
 			{
 				posts.length ? (
-					posts.map(post => {
+					posts.map((post,index) => {
 
 						return (
 							<BlurbLink
+								key={`blurbLink|${post.id}|${post.slug}|${index}`}
 								variant="underline"
 								to={`/posts/${post.id}/${post.slug}/`}
 								text={post.LinkText || "notext"}
