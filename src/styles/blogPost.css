@@ -8,6 +8,10 @@
 	margin: 10px
 }
 
+.blogPost em {
+	font-style: italic;
+}
+
 .blogPost blockquote {
 	margin: 10px 5vw;
 }
