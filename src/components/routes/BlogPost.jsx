@@ -2,7 +2,7 @@ import { Fragment, useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import he from "he";
-import { Interweave } from 'interweave';
+import { Interweave, ALLOWED_TAG_LIST } from 'interweave';
 import { FaRegPlusSquare, FaBars } from "react-icons/fa";
 import {
 	Box,
@@ -118,9 +118,12 @@ const BlogPost = props => {
 		let fullURL;
 		if (imagePath.indexOf("/blog/wp-content/uploads/") !== -1) {
 			fullURL = imagePath;
-		} else {
+		} else if ( imagePath.substr( 0, 4 ) !== "http" ) {
 			fullURL = `https://${config.imagesDomain}${imagePath}`;
+		} else {
+			fullURL = imagePath;
 		}
+		// console.log("fullURL",fullURL);
 		sst_focusedImage(fullURL);
 		sst_dialogOpen(true);
 	}, []); // setFocusedImage
@@ -189,7 +192,7 @@ const BlogPost = props => {
 
 	return (
 		<Box
-			className={`blogPost ${generalStyles.content} ${generalStyles.content100vw}`}
+			className={`${styles.postContainer} blogPost ${generalStyles.content} ${generalStyles.content100vw}`}
 			paddingLeft={config.contentIndent}
 			paddingRight={config.contentIndent}
 			marginTop="30px"
@@ -222,6 +225,7 @@ const BlogPost = props => {
 									<Interweave
 										content={st_post.content.rendered}
 										transform={transform}
+										allowList={[...ALLOWED_TAG_LIST,"iframe"]}
 									/>
 								</Box>
 							</Fragment>

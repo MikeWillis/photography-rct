@@ -40,8 +40,9 @@ const fixLinkTo = to => {
 
 const transformA = (node, children) => {
 	console.log("transformA called for node href:", node.getAttribute("href"));
-	console.log("transformA !node.getAttribute(class)",!node.getAttribute("class"));
+	console.log("transformA test 1: !node.getAttribute(class)",!node.getAttribute("class"));
 	console.log("transformA test 2:",node.getAttribute("class")?.indexOf("gallery") === -1);
+	console.log("transformA test 3:", node.getAttribute("href")?.indexOf("/blog/wp-content/uploads") !== -1)
 	if (
 		// node.getAttribute("href")?.indexOf("mikewillisphotography") !== -1 &&
 		(
@@ -50,7 +51,7 @@ const transformA = (node, children) => {
 			node.getAttribute("href")?.indexOf("/blog/wp-content/uploads") !== -1
 		)
 	) {
-
+		console.log("transformA proceeding");
 		if ( node.innerText === "Continue Reading" ) {
 			// just get rid of these
 			return <Fragment></Fragment>;
@@ -113,6 +114,7 @@ const transformIMG = (node, children) => {
 }; // transformIMG
 
 const transform = (node, children) => {
+	console.log("transform:", node.tagName);
 	switch (node.tagName) {
 	case "A": return transformA(node,children); break;
 	case "IMG": return transformIMG(node,children); break;
