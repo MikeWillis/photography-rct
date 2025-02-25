@@ -200,6 +200,7 @@ const BlogPost = props => {
 			paddingBottom="5px"
 			position="relative"
 		>
+			<title>{`${(st_post ? st_post.title.rendered + " | " : "")}Mike Willis Photography`}</title>
 			<Flex
 				gap="3"
 			>
@@ -209,7 +210,9 @@ const BlogPost = props => {
 				>
 					{
 						!st_post ? (
-							<Box>No Post Yet :(</Box>
+							<Fragment>
+								<Box>No Post Yet :(</Box>
+							</Fragment>
 						) : (
 							<Fragment>
 								<AnimatedHeading
