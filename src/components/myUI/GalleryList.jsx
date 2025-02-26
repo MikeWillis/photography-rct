@@ -85,6 +85,7 @@ const GalleryList = props => {
 							gap="10"
 							wrap="wrap"
 							className={styles.letterList}
+							borderRadius={"{radii.lg}"}
 						>
 							{
 								galleries.galleryList.length ? (

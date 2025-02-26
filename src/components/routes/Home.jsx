@@ -82,6 +82,7 @@ const Home = props => {
 		<Box
 			padding="5vh 0 10vh 0"
 		>
+			<title>Mike Willis Photography | Wildlife and Nature Photography</title>
 			<Box
 				height="81vh"
 			>
@@ -210,7 +211,7 @@ const Home = props => {
 				</Wrap>
 			</Box>
 
-			<Gallery galleryType="Random" />
+			<Gallery galleryType="Random" showTitle={false} />
 		</Box>
 	);
 };

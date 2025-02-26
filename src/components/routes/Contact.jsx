@@ -90,6 +90,7 @@ const Contact = props => {
 			paddingRight={config.contentIndent}
 			paddingBottom="5vh"
 		>
+			<title>Mike Willis Photography | Contact</title>
 			<AnimatedHeading heading="Contact Me" marginBottom="5vh" />
 
 			{
