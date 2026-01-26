@@ -145,12 +145,19 @@ const PhotoGallerySwipe = memo(props => {
 		sortOptionItems.push({ value: "country", label: "Country Taken" });
 	}
 
+	// console.log("galleryType",galleryType);
+
 	const sortOptions = createListCollection({
 		items: sortOptionItems,
 	});
 
 	const [st_activeAdminImage, sst_activeAdminImage] = useState(null);
-	const [st_sort, sst_sort] = useState("random");
+	const [st_sort,sst_sort] = useState(()=>{
+		return galleryType === "newest" ? "date" : "random";
+	});
+	const [st_sortDirection,sst_sortDirection] = useState(()=>{
+		return galleryType === "newest" ? "DESC" : "ASC";
+	});
 	const [st_gallery,sst_gallery] = useState([]);
 	const [st_sortedGallery, sst_sortedGallery] = useState([]);
 
@@ -208,17 +215,21 @@ const PhotoGallerySwipe = memo(props => {
 			break;
 		}
 
+		let gall;
 		if ( sortBy === "random" ) {
-			let gall = [...st_gallery];
+			gall = [...st_gallery];
 			shuffleArray( gall );
-			sst_sortedGallery( gall );
 		} else {
-			sst_sortedGallery(_.sortBy(st_gallery, [sortBy]));
+			gall = _.sortBy(st_gallery, [sortBy]);
+			if ( st_sortDirection === "DESC" ) {
+				gall.reverse();
+			}
 		}
-		
+		sst_sortedGallery( gall );
 	}, [
 		st_gallery,
 		st_sort,
+		st_sortDirection,
 	]);
 
 	useEffect(() => {
@@ -369,7 +380,7 @@ const PhotoGallerySwipe = memo(props => {
 					<AdminTools 
 						image={st_activeAdminImage} 
 						onClose={() =>{
-							console.log("closing");
+							// console.log("closing");
 							sst_activeAdminImage(null);
 						}} 
 					/>
