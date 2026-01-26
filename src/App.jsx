@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchPosts } from "./redux/slices/blog";
 import { Routes, Route, useLocation } from "react-router";
 import ReactGA from "react-ga4";
+import { Toaster } from "./components/ui/toaster";
 
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
@@ -18,6 +19,7 @@ import BlogPost from "./components/routes/BlogPost";
 import Gallery from "./components/routes/Gallery";
 import BlogPosts from "./components/routes/BlogPosts";
 import Contact from "./components/routes/Contact";
+import AdminLogin from "./components/routes/AdminLogin";
 import ThirdPartyScripts from "./components/general/ThirdPartyScripts";
 
 import { navigationActions } from "./redux/slices/navigation";
@@ -90,6 +92,7 @@ function App() {
 				<Routes>
 					<Route path="/" element={<Home />} />
 					<Route path="/contact/" element={<Contact />} />
+					<Route path="/adminLogin/" element={<AdminLogin />} />
 					<Route path="/galleries/:galleryType?" element={<Gallery />} />
 					<Route path="/trips/:trip" element={<Gallery />} />
 					<Route path="/posts/:id/:slug/" element={<BlogPost />} />
@@ -101,6 +104,8 @@ function App() {
 			<Footer />
 
 			<ThirdPartyScripts />
+
+			<Toaster />
 		</Box>
 	)
 }

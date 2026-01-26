@@ -1,10 +1,14 @@
 import { Fragment } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
 	Box,
 	Text,
+	Link as ChakraLink,
 } from "@chakra-ui/react";
 
 import Link from "../general/Link";
+
+import { authActions } from "../../redux/slices/auth";
 
 import { config } from "../../config";
 
@@ -17,7 +21,26 @@ let navLinks = [
 	{ to: "/posts/5/about-me/", text: "About Me" },
 ];
 
+let loginLink = { to: "/adminLogin/", text: "Admin Login" };
+let logoutLink = { url: "#", text: "Admin Logout" };
+
 const Footer = props => {
+	const dispatch = useDispatch();
+
+	const isAdmin = useSelector((state) => state.auth.isAdmin);
+
+	const handleLogout = event=>{
+		event.preventDefault();
+		dispatch(authActions.setLogout());
+	};
+
+	logoutLink.onClick = handleLogout;
+
+	const currentNavLinks = [
+		...navLinks, 
+		isAdmin ? logoutLink : loginLink
+	];
+
 	return (
 		<Box
 			className={`${generalStyles.content100vw} ${generalStyles.content} ${styles.footer}`}
@@ -29,16 +52,29 @@ const Footer = props => {
 
 			<Box>
 				{
-					navLinks.map((link, index) => {
+					currentNavLinks.map((link, index) => {
 						return (
 							<Fragment key={`fLinks|${index}|${link.to}`}>
-								<Link
-									variant="underline"
-									to={link.to}
-									text={link.text}
-								/>
 								{
-									index < navLinks.length - 1 ? (
+									link.onClick ? (
+										<ChakraLink
+											variant="underline"
+											url={link.url}
+											onClick={link.onClick}
+										>
+											{link.text}
+										</ChakraLink>
+									) : (
+										<Link
+											variant="underline"
+											to={link.to}
+											text={link.text}
+										/>
+									)
+								}
+								
+								{
+									index < currentNavLinks.length - 1 ? (
 										<Text color={"{colors.teal.fg}"} display="inline">
 											&nbsp;&nbsp;|&nbsp;&nbsp;
 										</Text>

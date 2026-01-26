@@ -78,8 +78,13 @@ const PhotoGallery = props => {
 
 	useEffect(() => {
 		let gallery = galleries.galleries.filter(gal => gal.type === galleryType);
+		let adminToken = localStorage.getItem('adminToken');
 		if (!gallery.length) {
-			dispatch(fetchGallery(galleryType));
+			console.log("calling fetchGallery");
+			dispatch(fetchGallery({
+				galleryType: galleryType,
+				adminToken: adminToken,
+			}));
 		} else {
 			// yay
 			gallery = gallery[0];

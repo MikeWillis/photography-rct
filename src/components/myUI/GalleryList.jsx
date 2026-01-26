@@ -36,7 +36,7 @@ const GalleryList = props => {
 		galleries,
 	]);
 
-	console.log("st_fullList", st_fullList);
+	// console.log("st_fullList", st_fullList);
 
 	let handleFilter = useCallback(filter => {
 		if ( filter ) {

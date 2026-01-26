@@ -58,9 +58,7 @@ const PhotoGallery_Thumbnail = props => {
 				/>
 				{
 					st_hovering ? (
-						<Box
-							className={styles.thumbDetails}
-						>
+						<Box className={styles.thumbDetails}>
 							<Text>
 								<span className={styles.animalCommon}>{image.AnimalCommon}</span>
 								{/* <br />Image ID #{image.ImageID} */}

@@ -4,36 +4,57 @@ import {
 } from "@chakra-ui/react";
 import { InputGroup } from "../ui/input-group";
 
-const useDebounce = (value, delay) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
+const useDebounce = (value, delay, onStart, onComplete, st_focused) => {
+	const [debouncedValue, setDebouncedValue] = useState(value);
 
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
+	useEffect(() => {
+		if ( st_focused ) {
+			if ( typeof( onStart ) === "function" ) {
+				onStart();
+			}
+			const handler = setTimeout(() => {
+				if  ( typeof( onComplete ) === "function" ) {
+					onComplete();
+				}
+				setDebouncedValue(value);
+			}, delay);
 
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
+			return () => {
+				clearTimeout(handler);
+			};
+		}
+	}, [value, delay, onStart, onComplete, st_focused]);
 
-  return debouncedValue;
+	return debouncedValue;
 };
 
 const DebouncedInput = props => {
 	let {
 		onChange,
-		delay = 500,
+		delay=500,
 		endElement,
 		placeholder,
+		width,
+		onStart,
+		onComplete,
+		startVal,
 	} = props;
 
-  const [st_value, sst_value] = useState("");
-  const debouncedValue = useDebounce(st_value, delay);
+	const [st_focused,sst_focused] = useState(false);
+  const [st_value, sst_value] = useState(startVal || "");
+  const debouncedValue = useDebounce(st_value, delay, onStart, onComplete, st_focused);
 
   useEffect(() => {
-    onChange(debouncedValue);
-  }, [debouncedValue, onChange]);
+		if ( st_focused ) {
+			onChange(debouncedValue);
+		}
+  }, [debouncedValue, onChange, st_focused]);
+
+	useEffect(()=>{
+		if ( !st_focused ) {
+			sst_value(startVal);
+		}
+	},[startVal,st_focused]);
 
 	let renderInput = ()=>{
 		return (
@@ -41,6 +62,9 @@ const DebouncedInput = props => {
 				value={st_value}
 				onChange={(e) => sst_value(e.target.value)}
 				placeholder={placeholder}
+				width={width || null}
+				onFocus={()=>sst_focused(true)}
+				onBlur={()=>sst_focused(false)}
 			/>
 		);
 	}; // renderInput

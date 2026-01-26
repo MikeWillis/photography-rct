@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -33,38 +33,81 @@ const Gallery = props => {
 
 	let galleries = useSelector(state => state.galleries);
 
-	useEffect(() => {
-		if (galleryType || trip) {
-			let focusedType = galleryType ? galleryType : trip;
+	// 1. Create a persistent lock that doesn't trigger re-renders
+	const fetchLock = useRef({});
 
-			let gallery = galleries.galleries.filter(gal => gal.type === focusedType);
-			if (!gallery.length && !galleries.loading) {
-				if (trip) {
-					console.log("Gallery fetching trip gallery");
-					dispatch(fetchGallery({
-						trip: true,
-						galleryType: trip
-					}));
-				} else {
-					dispatch(fetchGallery({ galleryType }));
-				}
-			} else if (!galleries.loading) {
-				// hmm what to do what to do
+	useEffect(() => {
+		const focusedType = galleryType || trip;
+
+		if (focusedType) {
+			const gallery = galleries.galleries.filter(gal => gal.type === focusedType);
+			
+			// 2. Check the Redux state AND our manual lock
+			if (!gallery.length && !galleries.loading && !fetchLock.current[focusedType]) {
+				
+				// 3. Lock it immediately (synchronous)
+				fetchLock.current[focusedType] = true;
+				
+				const adminToken = localStorage.getItem('adminToken');
+				// console.log("Fetching gallery for:", focusedType);
+				
+				dispatch(fetchGallery({
+					trip: !!trip,
+					galleryType: focusedType,
+					adminToken: adminToken,
+				})).finally(() => {
+					// 4. Unlock when done (optional, or keep it locked to prevent re-fetches)
+					fetchLock.current[focusedType] = false;
+				});
 			}
 		} else {
-			let galleryList = galleries.galleryList;
-			if (!galleryList.length && !galleries.loading) {
-				// console.log("fetching galleryList");
-				console.log("Gallery fetching default gallery");
+			// Apply similar logic for galleryList if needed
+			if (!galleries.galleryList.length && !galleries.loading && !fetchLock.current['list']) {
+				fetchLock.current['list'] = true;
 				dispatch(fetchGalleryList());
 			}
 		}
-	}, [
-		galleries,
-		galleryType,
-		trip,
-		dispatch,
-	]);
+	// We keep the dependencies as they were, but the Ref acts as the gatekeeper
+	}, [galleries, galleryType, trip, dispatch]);
+
+
+
+		// let galleries = useSelector(state => state.galleries);
+	// useEffect(() => {
+	// 	if (galleryType || trip) {
+	// 		let focusedType = galleryType ? galleryType : trip;
+
+	// 		let gallery = galleries.galleries.filter(gal => gal.type === focusedType);
+	// 		if (!gallery.length && !galleries.loading) {
+	// 			let adminToken = localStorage.getItem('adminToken');
+	// 			if (trip) {
+	// 				console.log("Gallery fetching trip gallery");
+	// 				dispatch(fetchGallery({
+	// 					trip: true,
+	// 					galleryType: trip,
+	// 					adminToken: adminToken,
+	// 				}));
+	// 			} else {
+	// 				console.log("fetching regular gallery");
+	// 				dispatch(fetchGallery({ galleryType, adminToken }));
+	// 			}
+	// 		} else if (!galleries.loading) {
+	// 			// hmm what to do what to do
+	// 		}
+	// 	} else {
+	// 		let galleryList = galleries.galleryList;
+	// 		if (!galleryList.length && !galleries.loading) {
+	// 			// console.log("fetching galleryList");
+	// 			console.log("Gallery fetching default gallery");
+	// 			dispatch(fetchGalleryList());
+	// 		}
+	// 	}
+	// }, [
+	// 	galleries,
+	// 	galleryType,
+	// 	trip,
+	// 	dispatch,
+	// ]);
 
 	let bannerText;
 	let pageTitle;

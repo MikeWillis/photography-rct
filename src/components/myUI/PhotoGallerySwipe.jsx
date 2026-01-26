@@ -6,6 +6,7 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from "photoswipe";
 import PhotoSwipeDynamicCaption from "photoswipe-dynamic-caption-plugin";
+import { FaGear } from "react-icons/fa6"
 
 import {
 	Box,
@@ -15,6 +16,8 @@ import {
 	Text,
 	Grid,
 	GridItem,
+	IconButton,
+
 	createListCollection,
 } from "@chakra-ui/react";
 import {
@@ -28,6 +31,7 @@ import {
 
 import GalleryBanner from "./GalleryBanner";
 import PhotoGallery_Thumbnail from "./PhotoGallery_Thumbnail";
+import AdminTools from "../general/AdminTools";
 
 import { fetchGallery } from "../../redux/slices/galleries";
 import { shuffleArray } from "../../util";
@@ -57,6 +61,70 @@ const ResponsiveMasonryBreakpoints = {
 	},
 };
 
+// Add this ABOVE your PhotoGallerySwipe component
+const GalleryItem = memo(({ image, index, isAdmin, onAdminClick, onThumbClick }) => {
+	// console.log("image",image);
+
+	if (isAdmin) {
+		// console.log(`Image ${image.ImageID} Visibility: ${image.Visibility}`);
+	}
+
+	let itemStyles = {};
+	if (isAdmin) {
+		itemStyles.border = "1px solid green";
+		itemStyles.padding = "4px";
+		if (!image.Visible) {
+			itemStyles.backgroundColor = "#FCA5A5";
+		} else {
+			switch( image.Visibility ) {
+				case "admin": {
+					itemStyles.backgroundColor = "#FDE68A";
+					break;
+				}
+				case "trip": {
+					itemStyles.backgroundColor = "#E0F2FE";
+					break;
+				}
+			}
+		}
+	}
+
+	return (
+		<Box
+			className={styles.thumbContainer}
+			data-imageid={image.ImageID}
+			style={itemStyles}
+		>
+			{
+				isAdmin ? (
+					<Fragment>
+						<IconButton
+							aria-label="Admin Tools"
+							size="xs"
+							variant="subtle"
+							colorPalette="gray"
+							onClick={(e) => {
+								e.stopPropagation();
+								onAdminClick(image);
+							}}
+						>
+							<FaGear />
+						</IconButton>
+						{/* {image.Visibility} */}
+					</Fragment>
+				) : ""
+			}
+			<PhotoGallery_Thumbnail
+				image={image}
+				index={index}
+				handleClick={onThumbClick}
+			/>
+		</Box>
+	);
+});
+
+GalleryItem.displayName = 'GalleryItem';
+
 const PhotoGallerySwipe = memo(props => {
 	let {
 		galleryType,
@@ -64,6 +132,8 @@ const PhotoGallerySwipe = memo(props => {
 
 	const dispatch = useDispatch();
 	const ref_gallery = useRef();
+
+	const isAdmin = useSelector((state) => state.auth.isAdmin);
 
 	let galleries = useSelector(state => state.galleries);
 
@@ -79,48 +149,49 @@ const PhotoGallerySwipe = memo(props => {
 		items: sortOptionItems,
 	});
 
+	const [st_activeAdminImage, sst_activeAdminImage] = useState(null);
 	const [st_sort, sst_sort] = useState("random");
 	const [st_gallery,sst_gallery] = useState([]);
 	const [st_sortedGallery, sst_sortedGallery] = useState([]);
 
-	useEffect(()=>{
-		if ( !galleries.loading ) {
-			let gallery = galleries.galleries.filter( gal => gal.type === galleryType );
+	useEffect(() => {
+		if (!galleries.loading) {
+			const targetGallery = galleries.galleries.find(gal => gal.type === galleryType);
 
-			if ( gallery.length ) {
-				gallery = gallery[0].images.map((image, index) => {
-					let caption = `${image.AnimalCommon} - ${image.AnimalScientific}`;
-					if (image.Notes) {
-						caption = `${caption}; ${image.Notes}`;
+			if (targetGallery) {
+				const processedGallery = targetGallery.images.map((image, index) => {
+					// 1. Check if we already have this image in our local state to steal its processed data
+					const existing = st_gallery.find(img => img.ImageID === image.ImageID);
+
+					// 2. REFERENCE CHECK: If the object in Redux is the EXACT same one as before,
+					// return the existing version. This is the secret to zero-lag.
+					if (existing && existing === image) {
+						return existing;
 					}
-					let placeholderURL = `https://${config.imagesDomain}/loadingRing.gif`;
-					let imagePath = image.FilePath.replace("/images/", "/");
-					let thumbPath = imagePath.replace("1500", "300");
-					let thumbURL = `https://${config.imagesDomain}${thumbPath}${image.FileName}`;
-					let fullURL = `https://${config.imagesDomain}${imagePath}${image.FileName}`;
 
+					// 3. Otherwise, something changed (or it's the first load). Process it:
+					const imagePath = image.FilePath.replace("/images/", "/");
+					const thumbPath = imagePath.replace("1500", "300");
+
+					// console.log("image",image);
 					return {
 						...image,
 						index,
-						caption,
-						thumbURL,
-						fullURL,
-						src: fullURL
+						caption: `${image.AnimalCommon} - ${image.AnimalScientific}${image.Notes ? `; ${image.Notes}` : ""}`,
+						thumbURL: `https://${config.imagesDomain}${thumbPath}${image.FileName}`,
+						fullURL: `https://${config.imagesDomain}${imagePath}${image.FileName}`,
+						src: `https://${config.imagesDomain}${imagePath}${image.FileName}`
 					};
 				});
-				sst_gallery( prev=>{
-					if ( _.isEqual( prev, gallery ) ) {
-						return prev;
-					} else {
-						return gallery;
-					}
-				} );
+
+				// Only update local state if the resulting array is actually different
+				sst_gallery(prev => {
+					if (_.isEqual(prev, processedGallery)) return prev;
+					return processedGallery;
+				});
 			}
 		}
-	},[
-		galleryType,
-		galleries,
-	]);
+	}, [galleryType, galleries,st_gallery]); // Removed st_gallery from here to prevent infinite loops
 
 	useEffect(() => {
 		let sortBy;
@@ -182,6 +253,11 @@ const PhotoGallerySwipe = memo(props => {
 						<p>
 							{`${slide.data.AnimalCommon} | ${slide.data.DateTaken_Formatted} | ${(slide.data.location ? `${slide.data.location}, ` : "")}${slide.data.country}`}
 						</p>
+						{
+							slide.data.Notes ? (
+								<p>{slide.data.Notes}</p>
+							) : ""
+						}
 						<p style={{ fontStyle: "italic" }}>
 							{photoData.Camera ? `${photoData.Camera} | ` : ""}
 							{photoData.Aperture ? `${photoData.Aperture} | ` : ""}
@@ -207,29 +283,27 @@ const PhotoGallerySwipe = memo(props => {
 		st_sortedGallery
 	]);
 
-	let handleThumbClick = (event, index) => {
+	const handleThumbClick = useCallback((event, index) => {
 		event.preventDefault();
-		lightbox.loadAndOpen(index);
-	}; // handleThumbClick
+		if (lightbox) lightbox.loadAndOpen(index);
+	}, []);
 
-	const renderThumbBoxes = useCallback(images => {
-		return images.map((image, index) => {
-			return (
-				<Box
-					className={styles.thumbContainer}
-					key={`galleryThumb_${image.ImageID}_${index}`}
-					data-imageid={image.ImageID}
-				>
-					<PhotoGallery_Thumbnail
-						image={image}
-						index={index}
-						handleClick={handleThumbClick}
-					/>
-				</Box>
-			);
-		})
-	}, [
-	]);
+	const handleAdminClick = useCallback((image) => {
+		sst_activeAdminImage(image);
+	}, []);
+
+	const renderThumbBoxes = useCallback((images) => {
+		return images.map((image, index) => (
+			<GalleryItem
+				key={`galleryThumb_${image.ImageID}`} // Remove index from key if possible
+				image={image}
+				index={index}
+				isAdmin={isAdmin}
+				onAdminClick={handleAdminClick}
+				onThumbClick={handleThumbClick}
+			/>
+		));
+	}, [isAdmin, handleAdminClick, handleThumbClick]);
 
 	let renderSortSelector = () => {
 		return (
@@ -289,8 +363,22 @@ const PhotoGallerySwipe = memo(props => {
 				</ResponsiveMasonry>
 
 			</Box>
+
+			{
+				isAdmin && (
+					<AdminTools 
+						image={st_activeAdminImage} 
+						onClose={() =>{
+							console.log("closing");
+							sst_activeAdminImage(null);
+						}} 
+					/>
+				)
+			}
 		</Box>
 	);
 });
+
+PhotoGallerySwipe.displayName = 'PhotoGallerySwipe';
 
 export default PhotoGallerySwipe;
