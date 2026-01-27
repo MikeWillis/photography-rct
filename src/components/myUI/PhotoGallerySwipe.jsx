@@ -6,7 +6,7 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from "photoswipe";
 import PhotoSwipeDynamicCaption from "photoswipe-dynamic-caption-plugin";
-import { FaGear } from "react-icons/fa6"
+import { FaGear, FaMagnifyingGlass } from "react-icons/fa6"
 
 import {
 	Box,
@@ -17,6 +17,7 @@ import {
 	Grid,
 	GridItem,
 	IconButton,
+	Alert,
 
 	createListCollection,
 } from "@chakra-ui/react";
@@ -125,6 +126,30 @@ const GalleryItem = memo(({ image, index, isAdmin, onAdminClick, onThumbClick })
 
 GalleryItem.displayName = 'GalleryItem';
 
+const NoResultsMessage = props => {
+	let {
+		message = "No images found for that specific date range."
+	} = props;
+
+	return (
+		<Alert.Root status="info" variant="subtle" borderRadius="lg" py="6">
+			<Alert.Indicator>
+				<FaMagnifyingGlass />
+			</Alert.Indicator>
+			<Alert.Content>
+				<Alert.Title>No Results</Alert.Title>
+				<Alert.Description>
+					<Text color="fg.muted">
+						{message} Try adjusting your search or checking a different date type.
+					</Text>
+				</Alert.Description>
+			</Alert.Content>
+		</Alert.Root>
+	);
+}; // NoResultsMessage
+
+NoResultsMessage.displayName = "NoResultsMessage";
+
 const PhotoGallerySwipe = memo(props => {
 	let {
 		galleryType,
@@ -163,8 +188,9 @@ const PhotoGallerySwipe = memo(props => {
 
 	useEffect(() => {
 		if (!galleries.loading) {
+			console.log("galleries",galleries);
 			const targetGallery = galleries.galleries.find(gal => gal.type === galleryType);
-
+			console.log("targetGallery",targetGallery);
 			if (targetGallery) {
 				const processedGallery = targetGallery.images.map((image, index) => {
 					// 1. Check if we already have this image in our local state to steal its processed data
@@ -364,14 +390,21 @@ const PhotoGallerySwipe = memo(props => {
 				paddingTop="10px"
 				ref={ref_gallery}
 			>
-				<ResponsiveMasonry
-					columnsCountBreakPoints={ResponsiveMasonryBreakpoints.columns}
-					gutterBreakpoints={ResponsiveMasonryBreakpoints.gutter}
-				>
-					<Masonry>
-						{renderThumbBoxes(st_sortedGallery)}
-					</Masonry>
-				</ResponsiveMasonry>
+				{
+					st_sortedGallery.length ? (
+						<ResponsiveMasonry
+							columnsCountBreakPoints={ResponsiveMasonryBreakpoints.columns}
+							gutterBreakpoints={ResponsiveMasonryBreakpoints.gutter}
+						>
+							<Masonry>
+								{renderThumbBoxes(st_sortedGallery)}
+							</Masonry>
+						</ResponsiveMasonry>
+					) : (
+						<NoResultsMessage />
+					)
+				}
+				
 
 			</Box>
 

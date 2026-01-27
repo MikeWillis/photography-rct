@@ -22,7 +22,7 @@ import {
 
 import Link from "../general/Link";
 
-import { navigationActions } from "../../redux/slices/navigation";
+import { navigationActions,selectFilteredNavigation } from "../../redux/slices/navigation";
 
 import { config } from "../../config";
 
@@ -33,7 +33,9 @@ const Navigation = props => {
 		hideLogo,
 	} = props;
 
-	let navigation = useSelector(state => state.navigation);
+	// let navigation = useSelector(state => state.navigation);
+	let navigation = useSelector(selectFilteredNavigation);
+
 	const dispatch = useDispatch();
 
 	let handleFetch = async (menu) => {
@@ -97,7 +99,7 @@ const Navigation = props => {
 						navigation.menus.map((menu, index) => {
 							return (
 								<Box
-									key={`${menu.index}|${menu.title}`}
+									key={`${index}|${menu.key}|${menu.title}`}
 									hideBelow={`${menu.hideBelow || null}`}
 								>
 									{

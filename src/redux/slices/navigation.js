@@ -1,4 +1,4 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import { createSlice, createSelector, current } from "@reduxjs/toolkit";
 
 export const initialState = {
 	menus: [
@@ -20,6 +20,12 @@ export const initialState = {
 					key: "newest",
 					to: "/galleries/newest",
 					text: "Newest",
+				},
+				{
+					key: "dateRange",
+					to: "/galleries/dateRange",
+					text: "By Date",
+					permissions: "admin",
 				},
 			]
 		},
@@ -66,6 +72,29 @@ const navigationSlice = createSlice({
 	}
 });
 
+// selectors
+const selectAllMenus = (state) => state.navigation.menus;
+const selectIsAdmin = (state) => state.auth.isAdmin;
+
+// get the filtered navigation
+// get the filtered navigation
+export const selectFilteredNavigation = createSelector(
+	[selectAllMenus, selectIsAdmin],
+	(menus, isAdmin) => {
+		const filteredMenus = menus.map(menu => ({
+			...menu,
+			links: menu.links ? menu.links.filter(link => {
+				if (link.permissions === 'admin') {
+					return isAdmin;
+				}
+				return true;
+			}) : []
+		}));
+
+		// Return an object so navigation.menus.map works
+		return { menus: filteredMenus }; 
+	}
+); // selectFilteredNavigation
 
 export const navigationActions = navigationSlice.actions;
 export default navigationSlice;

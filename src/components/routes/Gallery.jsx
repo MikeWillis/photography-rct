@@ -9,11 +9,12 @@ import {
 	Skeleton,
 } from "../ui/skeleton";
 
+import SearchByDate from "../general/SearchByDate";
 import PhotoGallerySwipe from "../myUI/PhotoGallerySwipe";
 import GalleryList from "../myUI/GalleryList";
 import GalleryBanner from "../myUI/GalleryBanner";
 
-import { fetchGallery, fetchGalleryList } from "../../redux/slices/galleries";
+import { fetchGallery, fetchByDate, fetchGalleryList } from "../../redux/slices/galleries";
 
 const Gallery = props => {
 	let {
@@ -22,6 +23,7 @@ const Gallery = props => {
 
 	let { galleryType, trip } = useParams();
 	const dispatch = useDispatch();
+	const isAdmin = useSelector((state) => state.auth.isAdmin);
 
 	// console.log("galleryType",galleryType);
 	// console.log("trip",trip);
@@ -37,42 +39,43 @@ const Gallery = props => {
 	const fetchLock = useRef({});
 
 	useEffect(() => {
-		const focusedType = galleryType || trip;
+		if ( galleryType !== "dateRange" ) {
+			const focusedType = galleryType || trip;
 
-		if (focusedType) {
-			const gallery = galleries.galleries.filter(gal => gal.type === focusedType);
-			
-			// 2. Check the Redux state AND our manual lock
-			if (!gallery.length && !galleries.loading && !fetchLock.current[focusedType]) {
+			if (focusedType) {
+				const gallery = galleries.galleries.filter(gal => gal.type === focusedType);
 				
-				// 3. Lock it immediately (synchronous)
-				fetchLock.current[focusedType] = true;
-				
-				const adminToken = localStorage.getItem('adminToken');
-				// console.log("Fetching gallery for:", focusedType);
-				
-				dispatch(fetchGallery({
-					trip: !!trip,
-					galleryType: focusedType,
-					adminToken: adminToken,
-				})).finally(() => {
-					// 4. Unlock when done (optional, or keep it locked to prevent re-fetches)
-					fetchLock.current[focusedType] = false;
-				});
-			}
-		} else {
-			// Apply similar logic for galleryList if needed
-			if (!galleries.galleryList.length && !galleries.loading && !fetchLock.current['list']) {
-				fetchLock.current['list'] = true;
-				dispatch(fetchGalleryList());
+				// 2. Check the Redux state AND our manual lock
+				if (!gallery.length && !galleries.loading && !fetchLock.current[focusedType]) {
+					
+					// 3. Lock it immediately (synchronous)
+					fetchLock.current[focusedType] = true;
+					
+					const adminToken = localStorage.getItem('adminToken');
+					// console.log("Fetching gallery for:", focusedType);
+					
+					dispatch(fetchGallery({
+						trip: !!trip,
+						galleryType: focusedType,
+						adminToken: adminToken,
+					})).finally(() => {
+						// 4. Unlock when done (optional, or keep it locked to prevent re-fetches)
+						fetchLock.current[focusedType] = false;
+					});
+				}
+			} else {
+				// Apply similar logic for galleryList if needed
+				if (!galleries.galleryList.length && !galleries.loading && !fetchLock.current['list']) {
+					fetchLock.current['list'] = true;
+					dispatch(fetchGalleryList());
+				}
 			}
 		}
-	// We keep the dependencies as they were, but the Ref acts as the gatekeeper
+	
+		// We keep the dependencies as they were, but the Ref acts as the gatekeeper
 	}, [galleries, galleryType, trip, dispatch]);
 
-
-
-		// let galleries = useSelector(state => state.galleries);
+	// let galleries = useSelector(state => state.galleries);
 	// useEffect(() => {
 	// 	if (galleryType || trip) {
 	// 		let focusedType = galleryType ? galleryType : trip;
@@ -108,6 +111,14 @@ const Gallery = props => {
 	// 	trip,
 	// 	dispatch,
 	// ]);
+
+	let handleSearchByDate = (dateType,startDate,endDate)=>{
+		dispatch(fetchByDate({
+			dateType: dateType,
+			startDate: startDate,
+			endDate: endDate,
+		}));
+	}; // handleSearchByDate
 
 	let bannerText;
 	let pageTitle;
@@ -161,6 +172,13 @@ const Gallery = props => {
 				galleries.loading ? (
 					<Box>
 						<GalleryBanner text={bannerText} />
+						
+						{
+							isAdmin && galleryType === "dateRange" ? (
+								<SearchByDate handleSubmit={handleSearchByDate} />
+							) : ""
+						}
+
 						<Stack direction="row" height="200px" padding="20px" wrap="wrap">
 							{
 								Array.from(Array(20)).map((entry, index) => {
@@ -175,6 +193,13 @@ const Gallery = props => {
 							galleryType || trip ? (
 								<Box>
 									<GalleryBanner text={bannerText} />
+									
+									{
+										isAdmin && galleryType === "dateRange" ? (
+											<SearchByDate handleSubmit={handleSearchByDate} />
+										) : ""
+									}
+
 									<PhotoGallerySwipe galleryType={galleryType || trip} {...props} />
 								</Box>
 							) : (
