@@ -18,6 +18,9 @@ import {
 	GridItem,
 	IconButton,
 	Alert,
+	Link,
+	Wrap,
+	WrapItem,
 
 	createListCollection,
 } from "@chakra-ui/react";
@@ -30,10 +33,12 @@ import {
 	SelectValueText,
 } from "../ui/select";
 
+import BlurbLink from "../general/BlurbLink";
 import GalleryBanner from "./GalleryBanner";
 import PhotoGallery_Thumbnail from "./PhotoGallery_Thumbnail";
 import AdminTools from "../general/AdminTools";
 
+import { selectConservationLinks } from "../../redux/slices/navigation";
 import { fetchGallery } from "../../redux/slices/galleries";
 import { shuffleArray } from "../../util";
 import { config } from "../../config";
@@ -62,7 +67,6 @@ const ResponsiveMasonryBreakpoints = {
 	},
 };
 
-// Add this ABOVE your PhotoGallerySwipe component
 const GalleryItem = memo(({ image, index, isAdmin, onAdminClick, onThumbClick }) => {
 	// console.log("image",image);
 
@@ -159,7 +163,7 @@ const PhotoGallerySwipe = memo(props => {
 	const ref_gallery = useRef();
 
 	const isAdmin = useSelector((state) => state.auth.isAdmin);
-
+	const conservationLinks = useSelector( selectConservationLinks );
 	let galleries = useSelector(state => state.galleries);
 
 	let sortOptionItems = [
@@ -209,6 +213,7 @@ const PhotoGallerySwipe = memo(props => {
 					// console.log("image",image);
 					return {
 						...image,
+						randomSortVal: existing?.randomSortVal ?? Math.random(),
 						index,
 						caption: `${image.AnimalCommon} - ${image.AnimalScientific}${image.Notes ? `; ${image.Notes}` : ""}`,
 						thumbURL: `https://${config.imagesDomain}${thumbPath}${image.FileName}`,
@@ -237,19 +242,13 @@ const PhotoGallerySwipe = memo(props => {
 			break;
 		case "random":
 		default:
-			sortBy = "random";
+			sortBy = "randomSortVal";
 			break;
 		}
 
-		let gall;
-		if ( sortBy === "random" ) {
-			gall = [...st_gallery];
-			shuffleArray( gall );
-		} else {
-			gall = _.sortBy(st_gallery, [sortBy]);
-			if ( st_sortDirection === "DESC" ) {
-				gall.reverse();
-			}
+		let gall = _.sortBy(st_gallery, [sortBy]);
+		if ( st_sortDirection === "DESC" ) {
+			gall.reverse();
 		}
 		sst_sortedGallery( gall );
 	}, [
@@ -381,6 +380,55 @@ const PhotoGallerySwipe = memo(props => {
 		<Box
 			className={`${generalStyles.contentTransparent} ${generalStyles.content100vw} ${styles.galleryContainer}`}
 		>
+			{
+				galleryType === "threatened" ? (
+					<Box
+						width="80%"
+						marginLeft="auto"
+						marginRight="auto"
+						backgroundColor="#fff"
+						padding="5px"
+					>
+						<Text>Below are a handful of photos I&apos;ve taken of animals that are currently classified as Threatened under the <Link href="https://www.iucnredlist.org/" target="_blank" rel="noopener noreferrer">IUCN redlist</Link>. The Threatened classification includes Vulnerable, Endangered, and Critically Endangered. I hope you like my photos, and more importantly, I hope you love animals. I hope these species can be preserved.</Text>
+
+						<br />
+						<Text>I used to think there was nothing I could to do help Threatened animals, being that many of them are so far away. But of course there is, and of course one of the most needed things is, you guessed it, money. Every little bit helps, so please consider donating.</Text>
+
+						<Wrap
+							className={styles.grids}
+							paddingLeft={config.contentIndent}
+							paddingRight={config.contentIndent}
+							gap="20px"
+							borderTop="1px solid #ccc"
+							marginTop="10px"
+							borderBottom="1px solid #ccc"
+							marginBottom="10px"
+							paddingTop="5px"
+							paddingBottom="5px"
+						>
+							{
+								conservationLinks.map((link,index)=>{
+									return (
+										<WrapItem
+											key={`conservationLinks|${link.to}|${index}`}
+											width={{ sm: "100%", md: "23%" }}
+											padding="3px"
+										>
+											<BlurbLink
+												variant="underline"
+												to={link.to}
+												text={link.text}
+												blurb={link.blurb}
+												image={link.image}
+											/>
+										</WrapItem>
+									)
+								})
+							}
+						</Wrap>
+					</Box>
+				) : ""
+			}
 			<div style={{ margin: "10px" }}>
 				{renderSortSelector()}
 			</div>

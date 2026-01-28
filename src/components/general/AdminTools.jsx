@@ -256,6 +256,8 @@ const AdminTools = props=>{
 		}
 	}; // handleOpenChange
 
+	console.log("image",image);
+
 	return (
 		<DialogRoot 
 			open={!!image} 
@@ -271,6 +273,7 @@ const AdminTools = props=>{
 					>
 						<Box><b>FilePath:</b> {image.FilePath}{image.FileName}</Box>
 						<Box><b>image ID:</b> {image.ImageID}</Box>
+						<Box><b>trip:</b> {image.trip}</Box>
 					</Grid>
 
 					<Grid

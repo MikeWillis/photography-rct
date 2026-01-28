@@ -61,10 +61,16 @@ const PhotoGallery_Thumbnail = props => {
 						<Box className={styles.thumbDetails}>
 							<Text>
 								<span className={styles.animalCommon}>{image.AnimalCommon}</span>
+								{
+									image.threatCategory ? (
+										<Fragment>
+											<br />IUCN Threat Level: {image.threatCategory}
+										</Fragment>
+									) : ""
+								}
 								{/* <br />Image ID #{image.ImageID} */}
 								{/* <br />{image.DateTaken_Formatted} */}
-								<br />
-								{image.location ? `${image.location}, ` : ""}{image.country}
+								<br />{image.location ? `${image.location}, ` : ""}{image.country}
 							</Text>
 						</Box>
 					) : ""

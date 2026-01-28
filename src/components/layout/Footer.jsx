@@ -86,12 +86,18 @@ const Footer = props => {
 				}
 			</Box>
 
-			<Text className={styles.googleCrap}>
-				This site is protected by reCAPTCHA and the Google{" "}
-				<a href="https://policies.google.com/privacy">Privacy Policy</a> and{" "}
-				<a href="https://policies.google.com/terms">Terms of Service</a> apply.*<br /><br /><br />
-				* Yep no one cares about that crap but google wanted me to put it here.
-			</Text>
+			<Box className={styles.finePrint}>
+				<Text>
+					IUCN 2025. IUCN Red List of Threatened Species. Version 2025-2
+					{" "}<ChakraLink href="https://www.iucnredlist.org/" target="_blank" rel="noopener noreferrer">www.iucnredlist.org</ChakraLink>
+				</Text>
+				<Text className={styles.googleCrap}>
+					This site is protected by reCAPTCHA and the Google{" "}
+					<a href="https://policies.google.com/privacy">Privacy Policy</a> and{" "}
+					<a href="https://policies.google.com/terms">Terms of Service</a> apply.*<br />
+					* Yep no one cares about that crap but google wanted me to put it here.
+				</Text>
+			</Box>
 		</Box>
 	);
 };
