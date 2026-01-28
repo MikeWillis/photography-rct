@@ -128,7 +128,7 @@ export const selectFilteredNavigation = createSelector(
 					return isAdmin;
 				}
 				return true;
-			}) : []
+			}) : null
 		}));
 
 		// Return an object so navigation.menus.map works

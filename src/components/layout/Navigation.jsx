@@ -97,6 +97,7 @@ const Navigation = props => {
 				<ul>
 					{
 						navigation.menus.map((menu, index) => {
+							console.log("menu",menu);
 							return (
 								<Box
 									key={`${index}|${menu.key}|${menu.title}`}
