@@ -117,7 +117,6 @@ const selectIsAdmin = (state) => state.auth.isAdmin;
 export const selectConservationLinks = (state) => state.navigation.conservationLinks;
 
 // get the filtered navigation
-// get the filtered navigation
 export const selectFilteredNavigation = createSelector(
 	[selectAllMenus, selectIsAdmin],
 	(menus, isAdmin) => {

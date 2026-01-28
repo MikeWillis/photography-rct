@@ -9,6 +9,7 @@ import {
 	Skeleton,
 } from "../ui/skeleton";
 
+import Link from "../general/Link";
 import SearchByDate from "../general/SearchByDate";
 import PhotoGallerySwipe from "../myUI/PhotoGallerySwipe";
 import GalleryList from "../myUI/GalleryList";
@@ -123,6 +124,18 @@ const Gallery = props => {
 	let bannerText;
 	let pageTitle;
 
+	let specialGalleries = [
+		"favorites",
+		"newest",
+		"dateRange",
+		"threatened"
+	];
+
+	let showBreadcrumbs = true;
+	if ( galleryType && specialGalleries.includes( galleryType.toLowerCase() ) ) {
+		showBreadcrumbs = false;
+	}
+	
 	switch (galleryType) {
 		case "favorites":
 			bannerText = "My Favorites";
@@ -160,6 +173,7 @@ const Gallery = props => {
 			break;
 	}
 
+	console.log("galleryType",galleryType);
 	return (
 		<Fragment>
 			{
@@ -197,6 +211,37 @@ const Gallery = props => {
 									{
 										isAdmin && galleryType === "dateRange" ? (
 											<SearchByDate handleSubmit={handleSearchByDate} />
+										) : ""
+									}
+
+									{
+										showBreadcrumbs ? (
+											<Box
+												width="100%"
+												backgroundColor="#fff"
+												padding="3px"
+												margin="0px"
+											>
+												<Box
+													width="80%"
+													marginLeft="auto"
+													marginRight="auto"
+												>
+													<Link
+														variant="underline"
+														to="/"
+														text="Home"
+													/>
+													&nbsp;&gt;&nbsp;
+													<Link
+														variant="underline"
+														to="/galleries/"
+														text="Alphabetized"
+													/>
+													&nbsp;&gt;&nbsp;
+													{galleryType}
+												</Box>
+											</Box>
 										) : ""
 									}
 
