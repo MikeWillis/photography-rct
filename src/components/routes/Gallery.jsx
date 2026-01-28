@@ -128,7 +128,8 @@ const Gallery = props => {
 		"favorites",
 		"newest",
 		"dateRange",
-		"threatened"
+		"threatened",
+		"random",
 	];
 
 	let showBreadcrumbs = true;
