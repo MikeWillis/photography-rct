@@ -51,7 +51,7 @@ const Contact = props => {
 		// console.log(data);
 		let grecaptcha = window.grecaptcha || false;
 		if (!grecaptcha) {
-			console.log("no recaptcha available??");
+			// console.log("no recaptcha available??");
 		} else {
 			grecaptcha.ready(function () {
 				grecaptcha.execute(config.recaptcha.siteKey, { action: 'submit' }).then(function (token) {
@@ -85,7 +85,7 @@ const Contact = props => {
 							}
 							sst_response(json);
 						} else {
-							console.log("invalid response");
+							// console.log("invalid response");
 						}
 					};
 

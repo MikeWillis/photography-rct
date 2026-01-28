@@ -55,9 +55,9 @@ let fixImagePaths = post => {
 }; // fixImagePaths
 
 let formatPostDate = date => {
-	console.log("date", date);
+	// console.log("date", date);
 	date = new Date(date);
-	console.log("date", date);
+	// console.log("date", date);
 	let month = date.getMonth();
 	month = getFullMonth(month);
 	return `${month} ${date.getDate()}, ${date.getFullYear()}`;
@@ -78,7 +78,7 @@ const BlogPost = props => {
 	useEffect(() => {
 		// console.log("categories useEffect running:", categories);
 		if (!categories.categories.length && !categories.loaded && !categories.loading) {
-			console.log("BlogPost dispatching fetchCategories");
+			// console.log("BlogPost dispatching fetchCategories");
 			dispatch(fetchCategories());
 		} else if (!categories.categories.length && categories.loaded) {
 			// hmph, the load must have failed :(

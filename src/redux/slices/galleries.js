@@ -79,7 +79,7 @@ const galleriesSlice = createSlice({
 	reducers: {
 		updateImage: (state, action) => {
 			const updatedImage = action.payload; // Expecting the full image object
-			console.log("Redux received update:", action.payload);
+			// console.log("Redux received update:", action.payload);
 			// Find the gallery that contains this image
 			state.galleries.forEach((gallery) => {
 				const imageIndex = gallery.images.findIndex(
@@ -123,7 +123,7 @@ const galleriesSlice = createSlice({
 		});
 		builder.addCase(fetchByDate.fulfilled, (state, action) => {
 			let currentState = current(state);
-			console.log("action.payload",action.payload);
+			// console.log("action.payload",action.payload);
 			state.galleries = [
 				...currentState.galleries.filter(gallery => gallery.type !== action.payload.type),
 				{ 
@@ -142,7 +142,7 @@ const galleriesSlice = createSlice({
 		});
 		builder.addCase(fetchGalleryList.fulfilled, (state, action) => {
 			let currentState = current(state);
-			console.log("action",action);
+			// console.log("action",action);
 			state.galleryList = action.payload.list;
 			state.loading = false;
 		});

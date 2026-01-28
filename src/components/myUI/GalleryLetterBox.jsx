@@ -22,7 +22,7 @@ const GalleryLetterBox = props => {
 					props.list.map(entry => {
 						var path = `/galleries/${entry}`;
 						return (
-							<p className="animal" key={entry}>
+							<p className={styles.animal} key={entry}>
 								<Link
 									variant="underline"
 									to={path}

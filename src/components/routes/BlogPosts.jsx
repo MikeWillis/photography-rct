@@ -38,7 +38,7 @@ const searchPosts = async (searchType, searchA, searchB) => {
 	if (!endpoint) {
 		return result;
 	} else {
-		console.log("searching posts, endpoint:", endpoint);
+		// console.log("searching posts, endpoint:", endpoint);
 		const response = await fetch(endpoint);
 		//console.log("response:",response);
 		if (response.ok) {
@@ -64,7 +64,7 @@ const BlogPosts = props => {
 	useEffect(() => {
 		const getPosts = async () => {
 			let posts = await searchPosts(searchType, searchA, searchB);
-			console.log("posts", posts);
+			// console.log("posts", posts);
 			sst_posts(posts);
 		};
 		getPosts();

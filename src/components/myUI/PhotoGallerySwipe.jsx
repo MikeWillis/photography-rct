@@ -192,9 +192,9 @@ const PhotoGallerySwipe = memo(props => {
 
 	useEffect(() => {
 		if (!galleries.loading) {
-			console.log("galleries",galleries);
+			// console.log("galleries",galleries);
 			const targetGallery = galleries.galleries.find(gal => gal.type === galleryType);
-			console.log("targetGallery",targetGallery);
+			// console.log("targetGallery",targetGallery);
 			if (targetGallery) {
 				const processedGallery = targetGallery.images.map((image, index) => {
 					// 1. Check if we already have this image in our local state to steal its processed data

@@ -256,7 +256,7 @@ const AdminTools = props=>{
 		}
 	}; // handleOpenChange
 
-	console.log("image",image);
+	// console.log("image",image);
 
 	return (
 		<DialogRoot 

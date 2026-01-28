@@ -80,7 +80,7 @@ const PhotoGallery = props => {
 		let gallery = galleries.galleries.filter(gal => gal.type === galleryType);
 		let adminToken = localStorage.getItem('adminToken');
 		if (!gallery.length) {
-			console.log("calling fetchGallery");
+			// console.log("calling fetchGallery");
 			dispatch(fetchGallery({
 				galleryType: galleryType,
 				adminToken: adminToken,
@@ -136,7 +136,7 @@ const PhotoGallery = props => {
 			let imagePath = image.FilePath.replace("/images/", "/");
 			let fullURL = `https://${config.imagesDomain}${imagePath}${image.FileName}`;
 
-			console.log("image", image);
+			// console.log("image", image);
 
 			sst_focusedImage({
 				...image,

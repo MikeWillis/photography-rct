@@ -173,7 +173,7 @@ const Gallery = props => {
 			break;
 	}
 
-	console.log("galleryType",galleryType);
+	// console.log("galleryType",galleryType);
 	return (
 		<Fragment>
 			{

@@ -41,7 +41,7 @@ const GalleryList = props => {
 	let handleFilter = useCallback(filter => {
 		if ( filter ) {
 			let filteredList = st_fullList.filter(entry => {
-				console.log("entry", entry);
+				// console.log("entry", entry);
 				return entry.toLowerCase().indexOf(filter.toLowerCase()) !== -1;
 			});
 			sst_filteredList(filteredList);

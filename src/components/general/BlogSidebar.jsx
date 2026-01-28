@@ -91,7 +91,7 @@ const BlogSidebar = props => {
 	useEffect(() => {
 		// console.log("categories useEffect running:", categories);
 		if (!categories.categories.length && !categories.loaded && !categories.loading) {
-			console.log("BlogSidebar dispatching fetchCategories");
+			// console.log("BlogSidebar dispatching fetchCategories");
 			dispatch(fetchCategories());
 		} else if (!categories.categories.length && categories.loaded) {
 			// hmph, the load must have failed :(
@@ -106,13 +106,13 @@ const BlogSidebar = props => {
 	useEffect(() => {
 		// console.log("categories useEffect running:", categories);
 		if (!archives.archives.length && !archives.loaded && !archives.loading) {
-			console.log("BlogSidebar dispatching fetchArchives");
+			// console.log("BlogSidebar dispatching fetchArchives");
 			dispatch(fetchArchives());
 		} else if (!archives.archives.length && archives.loaded) {
 			// hmph, the load must have failed :(
 		} else if (archives.archives.length) {
 			// yay
-			console.log("archives",archives);
+			// console.log("archives",archives);
 		}
 	}, [
 		dispatch,
@@ -121,7 +121,7 @@ const BlogSidebar = props => {
 
 	useEffect(() => {
 		if (!recentPosts.recentPosts.length && !recentPosts.loaded && !recentPosts.loading) {
-			console.log("BlogSidebar dispatching fetchPosts");
+			// console.log("BlogSidebar dispatching fetchPosts");
 			dispatch(fetchPosts());
 		} else if (!recentPosts.recentPosts.length && recentPosts.loaded) {
 			// hmph, the load must have failed :(

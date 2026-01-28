@@ -10,7 +10,7 @@ import Link from "../components/general/Link";
 import { config } from "../config";
 
 const fixLinkTo = to => {
-	console.log("fixLinkTo called for:", to);
+	// console.log("fixLinkTo called for:", to);
 	if ( to ) {
 		let removals = [
 			"https://",
@@ -39,10 +39,10 @@ const fixLinkTo = to => {
 }; // fixLinkTo
 
 const transformA = (node, children) => {
-	console.log("transformA called for node href:", node.getAttribute("href"));
-	console.log("transformA test 1: !node.getAttribute(class)",!node.getAttribute("class"));
-	console.log("transformA test 2:",node.getAttribute("class")?.indexOf("gallery") === -1);
-	console.log("transformA test 3:", node.getAttribute("href")?.indexOf("/blog/wp-content/uploads") !== -1)
+	// console.log("transformA called for node href:", node.getAttribute("href"));
+	// console.log("transformA test 1: !node.getAttribute(class)",!node.getAttribute("class"));
+	// console.log("transformA test 2:",node.getAttribute("class")?.indexOf("gallery") === -1);
+	// console.log("transformA test 3:", node.getAttribute("href")?.indexOf("/blog/wp-content/uploads") !== -1)
 	if (
 		// node.getAttribute("href")?.indexOf("mikewillisphotography") !== -1 &&
 		(
@@ -51,7 +51,7 @@ const transformA = (node, children) => {
 			node.getAttribute("href")?.indexOf("/blog/wp-content/uploads") !== -1
 		)
 	) {
-		console.log("transformA proceeding");
+		// console.log("transformA proceeding");
 		if ( node.innerText === "Continue Reading" ) {
 			// just get rid of these
 			return <Fragment></Fragment>;
@@ -88,7 +88,7 @@ const transformA = (node, children) => {
 			);
 		} else if ( node.getAttribute("href")?.indexOf("/blog/wp-content/uploads") === -1 ) {
 			// internal link, use router
-			console.log("transformA internal link??");
+			// console.log("transformA internal link??");
 			return (
 				<Link
 					variant="underline"
@@ -99,8 +99,8 @@ const transformA = (node, children) => {
 		} else {
 			let oldRef = node.getAttribute('href');
 			let newRef = oldRef.replace("www.mikewillisphotography.com/blog/wp-content/uploads", "data.mikewillisphotography.com/blog/wp-content/uploads");
-			console.log("oldRef",oldRef);
-			console.log("newRef",newRef);
+			// console.log("oldRef",oldRef);
+			// console.log("newRef",newRef);
 			node.setAttribute("href", newRef );
 		}
 	}
@@ -114,7 +114,7 @@ const transformIMG = (node, children) => {
 }; // transformIMG
 
 const transform = (node, children) => {
-	console.log("transform:", node.tagName);
+	// console.log("transform:", node.tagName);
 	switch (node.tagName) {
 	case "A": return transformA(node,children); break;
 	case "IMG": return transformIMG(node,children); break;
