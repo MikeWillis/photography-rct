@@ -3,11 +3,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { FaAngleDown, FaBars } from "react-icons/fa";
 import {
 	Flex,
-	// MenuContent,
-	// MenuItem,
-	// MenuRoot,
-	// MenuTrigger,
-	// MenuTriggerItem,
+	Portal,
+  AccordionRoot,
+  AccordionItem,
+  AccordionItemTrigger,
+  AccordionItemContent,
 	Box,
 	Button,
 	Link as ChakraLink,
@@ -81,9 +81,6 @@ const Navigation = props => {
 				);
 			}
 		}
-
-
-
 	}; // handleFetch
 
 	return (
@@ -196,42 +193,47 @@ const Navigation = props => {
 									)
 								} else if (menu.links) {
 									return (
-										<MenuRoot
-											key={`${menu.index}|${menu.title}`}
-											positioning={{ placement: "bottom-start", gutter: 2 }}
-										>
-											<MenuTrigger asChild>
-												<ChakraLink
-													variant="underline"
-													onMouseOver={event => handleFetch(menu)}
-													onClick={event => handleFetch(menu)}
-												>
-													{menu.title} <FaAngleDown />
-												</ChakraLink>
-											</MenuTrigger>
-											<MenuContent
-												className={styles.mobileNav}
-												borderColor={"{colors.teal.solid}"}
-												borderRadius={"{radii.lg}"}
-											>
-												{
-													menu.links.map((link, index) => {
-														return (
-															<MenuItem
+										<AccordionRoot collapsible key={`${menu.index}|${menu.title}`}>
+											<AccordionItem value={menu.key}>
+												<AccordionItemTrigger>
+													<Flex
+														as="span"
+														align="center"
+														justify="space-between"
+														w="100%"
+														cursor="pointer"
+													>
+														<ChakraLink
+															variant="underline"
+															onMouseOver={event => handleFetch(menu)}
+															onClick={event => handleFetch(menu)}
+														>
+															{menu.title} 
+														</ChakraLink>
+														<Box
+															as="span"
+															className={styles.chevron}
+														>
+															<FaAngleDown />
+														</Box>
+													</Flex>
+												</AccordionItemTrigger>
+
+												<AccordionItemContent>
+													<Box pl="4">
+														{menu.links.map((link, index) => (
+															<Link
 																key={`${index}|${link.text}`}
-																value={link.to}
-															>
-																<Link
-																	variant="underline"
-																	to={link.to}
-																	text={link.text}
-																/>
-															</MenuItem>
-														)
-													})
-												}
-											</MenuContent>
-										</MenuRoot>
+																variant="underline"
+																to={link.to}
+																text={link.text}
+																className={styles.navLink}
+															/>
+														))}
+													</Box>
+												</AccordionItemContent>
+											</AccordionItem>
+										</AccordionRoot>
 									)
 								}
 							})

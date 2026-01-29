@@ -42,3 +42,14 @@
 		outline: none;
 	}
 }
+
+.chevron {
+  display: inline-flex;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+/* when the accordion item is open */
+button[data-part="item-trigger"][data-state="open"] .chevron {
+  transform: rotate(180deg);
+}
