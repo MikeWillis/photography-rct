@@ -211,6 +211,9 @@ const PhotoGallerySwipe = memo(props => {
 					// eslint-disable-next-line
 					break;
 				case "all":
+					return entry.Visible && entry.Visibility === st_visibilityFilter;
+					// eslint-disable-next-line
+					break;
 				case "admin":
 					return entry.Visibility === st_visibilityFilter;
 					// eslint-disable-next-line
