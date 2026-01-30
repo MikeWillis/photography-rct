@@ -170,6 +170,13 @@ const PhotoGallerySwipe = memo(props => {
 		{ value: "random", label: "Random" },
 		{ value: "date", label: "Date Taken" }
 	];
+	let visibilityOptionItems = [
+		{ value: "everything", label: "Everything" },
+		{ value: "all", label: "All" },
+		{ value: "trip", label: "Trip" },
+		{ value: "admin", label: "Admin" },
+	];
+	
 	if (galleryType !== "Trip") {
 		sortOptionItems.push({ value: "country", label: "Country Taken" });
 	}
@@ -178,6 +185,9 @@ const PhotoGallerySwipe = memo(props => {
 
 	const sortOptions = createListCollection({
 		items: sortOptionItems,
+	});
+	const visibilityOptions = createListCollection({
+		items: visibilityOptionItems,
 	});
 
 	const [st_activeAdminImage, sst_activeAdminImage] = useState(null);
@@ -189,6 +199,30 @@ const PhotoGallerySwipe = memo(props => {
 	});
 	const [st_gallery,sst_gallery] = useState([]);
 	const [st_sortedGallery, sst_sortedGallery] = useState([]);
+	const [st_visibilityFilter,sst_visibilityFilter] = useState("everything");
+	const [st_filteredGallery,sst_filteredGallery] = useState([]);
+
+	useEffect(()=>{
+		if ( st_visibilityFilter ) {
+			sst_filteredGallery(st_gallery.filter((entry)=>{
+				switch( st_visibilityFilter ) {
+				case "everything":
+					return true;
+					// eslint-disable-next-line
+					break;
+				case "all":
+				case "admin":
+					return entry.Visibility === st_visibilityFilter;
+					// eslint-disable-next-line
+					break;
+				case "trip":
+					return entry.Visibility === "all" || entry.Visibility === "trip";
+					// eslint-disable-next-line
+					break;
+				}
+			}));
+		}
+	},[st_gallery,st_visibilityFilter]);
 
 	useEffect(() => {
 		if (!galleries.loading) {
@@ -246,13 +280,13 @@ const PhotoGallerySwipe = memo(props => {
 			break;
 		}
 
-		let gall = _.sortBy(st_gallery, [sortBy]);
+		let gall = _.sortBy(st_filteredGallery, [sortBy]);
 		if ( st_sortDirection === "DESC" ) {
 			gall.reverse();
 		}
 		sst_sortedGallery( gall );
 	}, [
-		st_gallery,
+		st_filteredGallery,
 		st_sort,
 		st_sortDirection,
 	]);
@@ -376,6 +410,41 @@ const PhotoGallerySwipe = memo(props => {
 		);
 	}; // renderSortSelector
 
+	let renderVisibilitySelector = () => {
+		return (
+			<Fragment>
+				<Box backgroundColor="#fff" padding="5px">
+					<SelectRoot
+						collection={visibilityOptions}
+						size="sm"
+						width="80%"
+						marginRight="auto"
+						marginLeft="auto"
+						value={[st_visibilityFilter]}
+						onValueChange={event => {
+							sst_visibilityFilter(event.value[0]);
+						}}
+					>
+						<SelectTrigger>
+							<SelectValueText placeholder="Visibility Filter" />
+						</SelectTrigger>
+						<SelectContent>
+							{
+								visibilityOptions.items.map(visibilityOption=>{
+									return (
+										<SelectItem item={visibilityOption} key={visibilityOption.value}>
+											{visibilityOption.label}
+										</SelectItem>
+									)
+								})
+							}
+						</SelectContent>
+					</SelectRoot>
+				</Box>
+			</Fragment>
+		);
+	}; // renderVisibilitySelector
+
 	return (
 		<Box
 			className={`${generalStyles.contentTransparent} ${generalStyles.content100vw} ${styles.galleryContainer}`}
@@ -432,6 +501,13 @@ const PhotoGallerySwipe = memo(props => {
 			<div style={{ margin: "10px" }}>
 				{renderSortSelector()}
 			</div>
+
+			{
+				isAdmin ? (
+					<Box>{renderVisibilitySelector()}</Box>
+				) : ""
+			}
+
 			<Box
 				paddingLeft={config.contentIndent}
 				paddingRight={config.contentIndent}

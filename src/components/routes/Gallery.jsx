@@ -133,7 +133,8 @@ const Gallery = props => {
 	];
 
 	let showBreadcrumbs = true;
-	if ( galleryType && specialGalleries.includes( galleryType.toLowerCase() ) ) {
+	// console.log("galleryType",galleryType);
+	if ( !galleryType || specialGalleries.includes( galleryType.toLowerCase() ) ) {
 		showBreadcrumbs = false;
 	}
 	
