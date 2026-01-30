@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { useState, Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { FaAngleDown, FaBars } from "react-icons/fa";
 import {
@@ -37,6 +37,8 @@ const Navigation = props => {
 	let navigation = useSelector(selectFilteredNavigation);
 
 	const dispatch = useDispatch();
+
+	const [st_menuOpen,sst_menuOpen] = useState(false);
 
 	let handleFetch = async (menu) => {
 		if (!menu.fetch) {
@@ -83,6 +85,11 @@ const Navigation = props => {
 		}
 	}; // handleFetch
 
+	let toggleMenu = details=>{
+		sst_menuOpen(details.open);
+		hideLogo(details.open); // hides the logo so it doesn't look squished when the menu is open
+	}; // toggleMenu
+
 	return (
 		<Fragment>
 			<Flex
@@ -94,7 +101,7 @@ const Navigation = props => {
 				<ul>
 					{
 						navigation.menus.map((menu, index) => {
-							console.log("menu",menu);
+							// console.log("menu",menu);
 							return (
 								<Box
 									key={`${index}|${menu.key}|${menu.title}`}
@@ -158,9 +165,8 @@ const Navigation = props => {
 			<Box hideFrom="sm">
 				<MenuRoot
 					positioning={{ placement: "bottom-end" }}
-					onOpenChange={details => {
-						hideLogo(details.open); // hides the logo so it doesn't look squished when the menu is open
-					}}
+					open={st_menuOpen}
+					onOpenChange={toggleMenu}
 				>
 					<MenuTrigger
 						asChild
@@ -228,6 +234,9 @@ const Navigation = props => {
 																to={link.to}
 																text={link.text}
 																className={styles.navLink}
+																onClick={()=>{
+																	toggleMenu({open:false});
+																}}
 															/>
 														))}
 													</Box>

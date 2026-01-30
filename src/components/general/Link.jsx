@@ -11,8 +11,16 @@ import { config } from "../../config";
 
 const Link = props=>{
 	return (
-		<ChakraLink variant={props.variant} asChild className={props.className || null}>
-			<NavLink to={props.to} end>
+		<ChakraLink
+			variant={props.variant}
+			asChild
+			className={props.className || null}
+			onClick={props.onClick || null}
+		>
+			<NavLink
+				to={props.to}
+				end
+			>
 				{
 					props.image ? (
 						<Grid>
