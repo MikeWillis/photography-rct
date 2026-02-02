@@ -175,6 +175,7 @@ const PhotoGallerySwipe = memo(props => {
 		{ value: "all", label: "All" },
 		{ value: "trip", label: "Trip" },
 		{ value: "admin", label: "Admin" },
+		{ value: "hidden", label: "Hidden" },
 	];
 	
 	if (galleryType !== "Trip") {
@@ -214,12 +215,16 @@ const PhotoGallerySwipe = memo(props => {
 					return entry.Visible && entry.Visibility === st_visibilityFilter;
 					// eslint-disable-next-line
 					break;
+				case "hidden":
+					return !entry.Visible;
+					// eslint-disable-next-line
+					break;
 				case "admin":
-					return entry.Visibility === st_visibilityFilter;
+					return entry.Visible && entry.Visibility === st_visibilityFilter;
 					// eslint-disable-next-line
 					break;
 				case "trip":
-					return entry.Visibility === "all" || entry.Visibility === "trip";
+					return entry.Visible && (entry.Visibility === "all" || entry.Visibility === "trip");
 					// eslint-disable-next-line
 					break;
 				}
