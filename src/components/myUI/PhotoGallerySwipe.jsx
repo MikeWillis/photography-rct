@@ -50,6 +50,10 @@ import "photoswipe-dynamic-caption-plugin/photoswipe-dynamic-caption-plugin.css"
 
 let lightbox;
 
+let normalizeImagePath = filePath=>{
+	return filePath.replace("/images/", "/");
+}; // normalizeImagePath
+
 const ResponsiveMasonryBreakpoints = {
 	// format for columns is width: columnCount
 	columns: {
@@ -203,6 +207,7 @@ const PhotoGallerySwipe = memo(props => {
 	const [st_visibilityFilter,sst_visibilityFilter] = useState("everything");
 	const [st_filteredGallery,sst_filteredGallery] = useState([]);
 
+	// set st_filteredGallery based on admin's choice in the dropdown menu
 	useEffect(()=>{
 		if ( st_visibilityFilter ) {
 			sst_filteredGallery(st_gallery.filter((entry)=>{
@@ -249,7 +254,7 @@ const PhotoGallerySwipe = memo(props => {
 					}
 
 					// 3. Otherwise, something changed (or it's the first load). Process it:
-					const imagePath = image.FilePath.replace("/images/", "/");
+					const imagePath = normalizeImagePath( image.FilePath );
 					const thumbPath = imagePath.replace("1500", "300");
 
 					// console.log("image",image);
@@ -306,6 +311,26 @@ const PhotoGallerySwipe = memo(props => {
 			pswpModule: PhotoSwipe,
 		});
 
+		// --- GOOGLE ANALYTICS TRACKING ---
+		lightbox.on('change', () => {
+			let currentIndex = lightbox.pswp.currIndex;
+			let clickedImage = st_sortedGallery[currentIndex];
+
+			let imagePath = normalizeImagePath( clickedImage.FilePath );
+			let photoPath = `${imagePath}${clickedImage.FileName}`;
+			
+			if (typeof window.gtag === "function" && clickedImage) {
+				window.gtag("event", "lightbox_slide_change", {
+					event_category: "Engagement",
+					event_label: clickedImage.AnimalCommon,
+					imageID: clickedImage.ImageID,
+					galleryType: galleryType,
+					country: clickedImage.country,
+					photoPath: photoPath,
+				});
+			}
+		});
+
 		lightbox.addFilter('thumbEl', (thumbEl, data, index) => {
 			const el = ref_gallery.current.querySelector(`[data-imageid='${data.ImageID}'] img`);
 			if (el) {
@@ -358,13 +383,33 @@ const PhotoGallerySwipe = memo(props => {
 			}
 		};
 	}, [
-		st_sortedGallery
+		st_sortedGallery,
+		galleryType
 	]);
 
 	const handleThumbClick = useCallback((event, index) => {
 		event.preventDefault();
-		if (lightbox) lightbox.loadAndOpen(index);
-	}, []);
+
+		let clickedImage = st_sortedGallery[index];
+
+		let imagePath = normalizeImagePath( clickedImage.FilePath );
+		let photoPath = `${imagePath}${clickedImage.FileName}`;
+
+		if (typeof window.gtag === "function" && clickedImage) {
+			window.gtag("event", "view_photo", {
+				event_category: "Engagement",
+				event_label: clickedImage.AnimalCommon,
+				imageID: clickedImage.ImageID,
+				galleryType: galleryType,
+				country: clickedImage.country,
+				photoPath: photoPath,
+			});
+		}
+
+		if (lightbox) {
+			lightbox.loadAndOpen(index);
+		}
+	}, [st_sortedGallery,galleryType]);
 
 	const handleAdminClick = useCallback((image) => {
 		sst_activeAdminImage(image);

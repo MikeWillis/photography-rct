@@ -20,6 +20,7 @@ import Gallery from "./components/routes/Gallery";
 import BlogPosts from "./components/routes/BlogPosts";
 import Contact from "./components/routes/Contact";
 import AdminLogin from "./components/routes/AdminLogin";
+import SingleImage from "./components/routes/SingleImage";
 import ThirdPartyScripts from "./components/general/ThirdPartyScripts";
 
 import { navigationActions } from "./redux/slices/navigation";
@@ -98,6 +99,7 @@ function App() {
 					<Route path="/posts/:id/:slug/" element={<BlogPost />} />
 					<Route path="/categories/:searchA/:searchB" element={<BlogPosts searchType="categories" />} />
 					<Route path="/archives/:searchA/:searchB/" element={<BlogPosts searchType="archives" />} />
+					<Route path="/image" element={<SingleImage />} />
 				</Routes>
 			</Box>
 
