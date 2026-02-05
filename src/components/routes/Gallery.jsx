@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
 	Stack,
 	Box,
+	Text,
 } from "@chakra-ui/react";
 import {
 	Skeleton,
@@ -243,6 +244,19 @@ const Gallery = props => {
 													&nbsp;&gt;&nbsp;
 													{galleryType}
 												</Box>
+											</Box>
+										) : ""
+									}
+
+									{
+										trip ? (
+											<Box
+												width="100%"
+												backgroundColor="#fff"
+												padding="3px"
+												margin="0px"
+											>
+												<Text>Galleries for trips, like this one, are a bit of an &quot;everything under the sun&quot; type of thing. I often list almost every photo I took on that trip, so you&apos;ll see quite a lot of images that look like duplications, and you may also see quite a lot of image that look terrible :).</Text>
 											</Box>
 										) : ""
 									}
